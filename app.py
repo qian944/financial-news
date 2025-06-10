@@ -15,7 +15,7 @@ if 'stock_code_input' not in st.session_state:
 
 
 st.markdown("""
-<h2 style='text-align: center; color: #2E4053;'>
+<h2 style='text-align: center;'>
     📈 财经新闻智能判别与投资建议系统
 </h2>
 """, unsafe_allow_html=True)
