@@ -3,6 +3,8 @@ from predict_model import predict_by_model
 from predict_ai import predict_by_ai, check_timeliness, generate_investment_advice
 from stock_data import get_stock_data
 from plot_utils import plot_stock_kline
+from plot_utils import plot_stock_kline, run_monte_carlo_simulation, plot_monte_carlo
+from predict_ai import generate_monte_carlo_advice
 
 # --- 第1步：初始化 Session State ---
 # 把所有可能在多次刷新中需要保持状态的变量都在这里初始化
@@ -107,45 +109,57 @@ if st.session_state.show_results:
         st.success(f"AI 判定结果：{data['result']}")
     
     # --- 投资建议模块现在被包裹在结果区域内，可以持久显示 ---
-    if st.checkbox("需要投资建议", value=True):
+    if st.checkbox("需要投资建议与分析", value=True):
         st.session_state.stock_code_input = st.text_input(
             "请输入股票代码（如000001.SZ）", 
             value=st.session_state.stock_code_input
         )
 
-        if st.button("生成投资建议"):
+        if st.button("生成投资建议与分析", use_container_width=True):
             if st.session_state.stock_code_input:
-                with st.spinner("正在获取长短期数据并生成专业分析..."):
-                    if check_timeliness(str(date), st.session_state.stock_code_input):
-                    # --- 核心改动开始 ---
+                stock_code = st.session_state.stock_code_input
+                news_date_str = str(date.strftime('%Y-%m-%d'))
+
+                with st.spinner("正在获取数据并生成专业分析..."):
+                    if check_timeliness(news_date_str, stock_code):
                     
-                    # 1. 获取一个月的完整数据
-                        stock_df_long = get_stock_data(st.session_state.stock_code_input, str(date.strftime('%Y-%m-%d')), days=30)
+                    # --- 1. 获取数据 (获取1年历史数据和最近30天数据) ---
+                        hist_df = get_stock_data(stock_code, news_date_str, days=365)
+                        recent_df = hist_df.tail(30) if hist_df is not None else None
                     
-                        if stock_df_long is not None and not stock_df_long.empty:
-                        # 2. 绘制炫酷的K线图
-                        # 注意：这里用 st.plotly_chart 来显示plotly图表
-                            st.plotly_chart(plot_stock_kline(stock_df_long), use_container_width=True)
+                        if hist_df is not None and not hist_df.empty:
                         
-                        # 3. 准备给AI的数据
-                        # 短期数据是最近7条
-                            stock_df_short = stock_df_long.tail(7)
+                        # --- 2. 显示基本面分析部分 ---
+                            st.subheader(" Part 1: 基于新闻的基本面与技术面分析")
+                            st.plotly_chart(plot_stock_kline(recent_df), use_container_width=True)
                         
-                        # 为了不让prompt太长，可以只把关键列转为字符串
-                            cols_to_show = ['trade_date', 'open', 'close', 'high', 'low', 'vol']
-                            short_data_str = stock_df_short[cols_to_show].to_string()
-                            long_data_str = stock_df_long[cols_to_show].to_string()
+                            short_data_str = hist_df.tail(7)[['trade_date', 'open', 'close', 'high', 'low', 'vol']].to_string()
+                            long_data_str = recent_df[['trade_date', 'open', 'close', 'high', 'low', 'vol']].to_string()
                         
-                        # 4. 调用新的AI分析函数
-                            suggestion = generate_investment_advice(
-                                f"{title} {content}", 
-                                short_data_str, 
-                                long_data_str
-                            )
+                            suggestion = generate_investment_advice(f"{title} {content}", short_data_str, long_data_str)
                             st.markdown(suggestion)
+                        
+                            st.divider()
+
+                            # --- 3. 蒙特卡洛模拟分析部分 ---
+                            st.subheader("Part 2: 基于蒙特卡洛模拟的未来股价概率分析")
+                            sim_days = st.selectbox("选择模拟周期（天）", [30, 90, 365], index=1)
+                        
+                            with st.spinner(f"正在进行 {sim_days} 天的蒙特卡洛模拟..."):
+                                sim_df, end_prices = run_monte_carlo_simulation(hist_df, sim_days=sim_days, num_simulations=1000)
+                            
+                                start_price = hist_df['close'].iloc[-1]
+                                mc_fig, prob_higher = plot_monte_carlo(sim_df, end_prices, start_price)
+                            
+                                st.plotly_chart(mc_fig, use_container_width=True)
+                            
+                            # 调用AI生成总结
+                                median_price = np.median(end_prices)
+                                mc_advice = generate_monte_carlo_advice(stock_code, sim_days, prob_higher, median_price)
+                                st.markdown(mc_advice)
+
                         else:
                             st.error("股票数据获取失败，请检查代码或日期。")
-                    # --- 核心改动结束 ---
                     else:
                         st.warning("此信息或已失效，请您谨慎投资")
             else:
