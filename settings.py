@@ -1,2 +1,4 @@
-TUSHARE_TOKEN = "your_tushare_token"
-GEMINI_API_KEY = "your_gemini_key"
+import streamlit as st
+
+TUSHARE_TOKEN = st.secrets["TUSHARE_TOKEN"]
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
