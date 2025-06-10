@@ -97,9 +97,9 @@ if st.session_state.show_results:
             st.write(f"判定为真实的概率: **{data['prob'][1]:.2%}**")
         with col2:
             st.metric(label="文章情感分析得分", value=f"{data['sentiment']:.4f}")
-            if data['sentiment'] > 0.01:
+            if data['sentiment'] > 0.02:
                 st.info("情感倾向：偏向积极/乐观 😊")
-            elif data['sentiment'] < -0.01:
+            elif data['sentiment'] < -0.02:
                 st.warning("情感倾向：偏向消极/悲观 😟")
             else:
                 st.info("情感倾向：中性 😐")
