@@ -101,3 +101,29 @@ def generate_investment_advice(news, stock_data_short_str, stock_data_long_str):
     ---
     """
     return gemini_prompt(prompt)
+
+def generate_monte_carlo_advice(stock_code, sim_days, prob_higher, final_price_median):
+    """
+    根据蒙特卡洛模拟的结果，生成一段总结性建议。
+    """
+    prob_percent = f"{prob_higher:.1%}"
+    
+    prompt = f"""
+    你是一位金融数据分析师，请将以下蒙特卡洛模拟的量化结果，解读成一段通俗易懂、面向普通投资者的文字。
+
+    **量化结果：**
+    - **分析对象**：股票 {stock_code}
+    - **模拟周期**：未来 {sim_days} 天
+    - **价格高于当前的概率**：{prob_percent}
+    - **预测期末价格中位数**：{final_price_median:.2f} 元
+
+    **解读要求：**
+    1.  以积极和鼓励的语气开头。
+    2.  清晰地说明概率结果的含义，强调这并非保证，而是基于历史数据的一种可能性分析。
+    3.  结合中位数价格，给出一个对未来价格范围的直观感受。
+    4.  最后附上一句标准的风险提示。
+    5.  语言要简洁、专业、易懂。
+
+    **请直接返回你生成的解读文字。**
+    """
+    return gemini_prompt(prompt)
