@@ -42,7 +42,7 @@ with st.container(border=True):
     with col2:
         st.write("")
         st.write("")
-        with st.expander("查看不同平台类型的新闻示例"):
+        with st.expander("查看不同平台的类型示例"):
             try:
                 with open("来源分类 .txt", "r", encoding="utf-8") as f:
                     example_text = f.read()
