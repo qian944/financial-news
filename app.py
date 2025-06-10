@@ -41,11 +41,11 @@ with st.container(border=True):
         with st.expander("查看不同平台类型的新闻示例"):
             try:
                 # 从 example.txt 文件读取内容
-                with open("example.txt", "r", encoding="utf-8") as f:
+                with open("来源分类 .txt", "r", encoding="utf-8") as f:
                     example_text = f.read()
                 st.markdown(example_text)
             except FileNotFoundError:
-                st.error("示例文件 'example.txt' 未找到。")
+                st.error("示例文件 '来源分类.txt' 未找到。")
     
     date = st.date_input("发布日期(yyyy/mm/dd)")
     mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI"])
