@@ -3,7 +3,7 @@ import torch
 from transformers import BertTokenizer
 from model import DualInputFakeNewsClassifier
 
-HF_MODEL_URL = "https://huggingface.co/your_user/your_repo/resolve/main/model_final.pt"
+HF_MODEL_URL = "https://huggingface.co/YanRY/Chinese-financial-news/resolve/main/best_fakenews_modelv3.pt"
 tokenizer = BertTokenizer.from_pretrained("hfl/chinese-roberta-wwm-ext")
 
 _model = None
