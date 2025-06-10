@@ -2,7 +2,7 @@ import streamlit as st
 from predict_model import predict_by_model
 from predict_ai import predict_by_ai, check_timeliness, generate_investment_advice
 from stock_data import get_stock_data
-from plot_utils import plot_stock
+from plot_utils import plot_stock_kline
 
 # --- 第1步：初始化 Session State ---
 # 把所有可能在多次刷新中需要保持状态的变量都在这里初始化
