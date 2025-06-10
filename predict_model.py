@@ -83,4 +83,4 @@ def predict_by_model(title, content, platform_code):
         prob = torch.softmax(logits, dim=1)[0]
         
     result_label = "真实" if prob[1] > 0.5 else "虚假"
-    return result_label, prob.cpu().tolist()
+    return result_label, prob.cpu().tolist(), sentiment_score
