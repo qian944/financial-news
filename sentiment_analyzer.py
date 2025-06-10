@@ -94,6 +94,6 @@ def get_article_sentiment(title, content):
     
     # 按照训练时的逻辑进行加权
     # 文章情绪词典分 = (0.6 * 标题情绪词典分 + 0.4 * 正文情绪词典分)
-    final_sentiment = (0.6 * title_sentiment + 0.4 * content_sentiment)
+    final_sentiment = (title_sentiment + content_sentiment)
     
     return round(final_sentiment, 4)
