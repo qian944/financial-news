@@ -76,7 +76,7 @@ def compute_sentiment_score(text):
     if total_words == 0:
         return 0.0
 
-    score = (pos_count - neg_count) / (pos_count + neg_count)
+    score = (pos_count - neg_count) / (abs(pos_count) + abs(neg_count))
     return round(score, 4)
 
 def get_article_sentiment(title, content):
