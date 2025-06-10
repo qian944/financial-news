@@ -47,7 +47,7 @@ with st.container(border=True):
             except FileNotFoundError:
                 st.error("示例文件 '来源分类.txt' 未找到。")
     
-    date = st.date_input("发布日期(yyyy/mm/dd)")
+    date = st.date_input("发布日期")
     mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI(Gemini 2.0-flash)"])
 
 # --- 第2步：处理“开始判别”按钮的点击事件 ---
