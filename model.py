@@ -7,7 +7,7 @@ import re
 class Attention(nn.Module):
     def __init__(self, hidden_dim):
         super().__init__()
-        self.attention = nn.Linear(hidden_dim, 1, bias=False) # 训练代码里的 attention 貌似没有 bias，这里保持一致
+        self.attention = nn.Linear(hidden_dim, 1) # 训练代码里的 attention 貌似没有 bias，这里保持一致
 
     def forward(self, lstm_out):
         # lstm_out: [batch, seq_len, hidden_dim]
