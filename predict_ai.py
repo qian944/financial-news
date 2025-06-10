@@ -28,8 +28,11 @@ def predict_by_ai(title, content, platform_code):
 请仅返回“真实”或“虚假”+理由。"""
     return gemini_prompt(prompt)
 
+from datetime import date
+
 def check_timeliness(news_date, stock_code):
-    prompt = f"""今天是 {st.session_state.get("today", "2025-06-10")}。
+    today = date.today().strftime("%Y-%m-%d")
+    prompt = f"""今天是 {today}。
 请判断以下财经新闻是否仍具有投资参考价值。
 发布日期为 {news_date}，相关股票代码为 {stock_code}。
 回答“仍具有时效性”或“此信息或已失效”。"""
