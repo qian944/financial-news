@@ -73,25 +73,45 @@ if st.session_state.show_results:
     
     # --- 投资建议模块现在被包裹在结果区域内，可以持久显示 ---
     if st.checkbox("需要投资建议", value=True):
-        # 将输入框的值绑定到 session_state
-        st.session_state.stock_code_input = st.text_input(
-            "请输入股票代码（如000001.SZ）", 
-            value=st.session_state.stock_code_input
-        )
+    st.session_state.stock_code_input = st.text_input(
+        "请输入股票代码（如000001.SZ）", 
+        value=st.session_state.stock_code_input
+    )
 
-        if st.button("生成投资建议"):
-            if st.session_state.stock_code_input:
-                with st.spinner("正在获取数据并生成建议..."):
-                    if check_timeliness(str(date), st.session_state.stock_code_input):
-                        stock_df = get_stock_data(st.session_state.stock_code_input, str(date))
-                        if stock_df is not None:
-                            # 为了防止图表和建议在下次输入时还显示，可以考虑也用session_state存
-                            st.pyplot(plot_stock(stock_df))
-                            suggestion = generate_investment_advice(f"{title} {content}", stock_df.to_dict())
-                            st.markdown(suggestion)
-                        else:
-                            st.error("股票数据获取失败")
+    if st.button("生成投资建议"):
+        if st.session_state.stock_code_input:
+            with st.spinner("正在获取长短期数据并生成专业分析..."):
+                if check_timeliness(str(date), st.session_state.stock_code_input):
+                    # --- 核心改动开始 ---
+                    
+                    # 1. 获取一个月的完整数据
+                    stock_df_long = get_stock_data(st.session_state.stock_code_input, str(date.strftime('%Y-%m-%d')), days=30)
+                    
+                    if stock_df_long is not None and not stock_df_long.empty:
+                        # 2. 绘制炫酷的K线图
+                        # 注意：这里用 st.plotly_chart 来显示plotly图表
+                        st.plotly_chart(plot_stock_kline(stock_df_long), use_container_width=True)
+                        
+                        # 3. 准备给AI的数据
+                        # 短期数据是最近7条
+                        stock_df_short = stock_df_long.tail(7)
+                        
+                        # 为了不让prompt太长，可以只把关键列转为字符串
+                        cols_to_show = ['trade_date', 'open', 'close', 'high', 'low', 'vol']
+                        short_data_str = stock_df_short[cols_to_show].to_string()
+                        long_data_str = stock_df_long[cols_to_show].to_string()
+                        
+                        # 4. 调用新的AI分析函数
+                        suggestion = generate_investment_advice(
+                            f"{title} {content}", 
+                            short_data_str, 
+                            long_data_str
+                        )
+                        st.markdown(suggestion)
                     else:
-                        st.warning("此信息或已失效，请您谨慎投资")
-            else:
-                st.warning("请输入股票代码！")
+                        st.error("股票数据获取失败，请检查代码或日期。")
+                    # --- 核心改动结束 ---
+                else:
+                    st.warning("此信息或已失效，请您谨慎投资")
+        else:
+            st.warning("请输入股票代码！")
