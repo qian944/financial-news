@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 from predict_model import predict_by_model
 from predict_ai import predict_by_ai, check_timeliness, generate_investment_advice
 from stock_data import get_stock_data
