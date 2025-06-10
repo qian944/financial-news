@@ -44,11 +44,16 @@ def plot_stock_kline(df):
     # 4. 美化图表布局
     fig.update_layout(
         title_text=f"{df['ts_code'].iloc[0]} 近一个月走势分析",
-        xaxis_title="日期",
+        height=600, # 可以适当增加图表总高度
+        
+        # --- 核心改动：分别控制每个轴的标题 ---
+        xaxis_title=None,  # 隐藏中间的X轴标题
+        xaxis2_title='交易日期', # 只在最下面的X轴(xaxis2)显示标题
+        
         yaxis_title="价格",
-        xaxis_rangeslider_visible=False,  # 不显示下方的范围拖动条
+        yaxis2_title="成交量",
+        
+        xaxis_rangeslider_visible=False,
         legend_title="图例"
     )
-    fig.update_yaxes(title_text="成交量", row=2, col=1)
-
     return fig
