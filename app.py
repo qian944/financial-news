@@ -19,8 +19,26 @@ mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI"
 # 开始判别按钮
 if st.button("开始判别"):
     if mode == "使用我们的模型！":
-        result, prob = predict_by_model(title, content, platform_code)
-        st.success(f"模型判定结果：{result}（真实概率：{prob[1]:.2f}）")
+        # --- 接收三个返回值 ---
+        result, prob, sentiment = predict_by_model(title, content, platform_code)
+        
+        # --- 在一行里用列(columns)来布局，更好看 ---
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.success(f"模型判定结果：**{result}**")
+            st.write(f"判定为真实的概率: **{prob[1]:.2%}**")
+
+        with col2:
+            st.metric(label="文章情感分析得分", value=f"{sentiment:.4f}")
+            # 根据情感分数的正负给一个简单的文本描述
+            if sentiment > 0.01:
+                st.info("情感倾向：偏向积极/乐观 😊")
+            elif sentiment < -0.01:
+                st.warning("情感倾向：偏向消极/悲观 😟")
+            else:
+                st.info("情感倾向：中性 😐")
+
     else:
         result = predict_by_ai(title, content, platform_code)
         st.success(f"AI 判定结果：{result}")
