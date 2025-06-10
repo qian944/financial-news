@@ -21,8 +21,32 @@ with st.container(border=True):
     st.subheader("第一步：输入新闻信息")
     title = st.text_input("新闻标题")
     content = st.text_area("新闻正文", height=200)
-    platform = st.selectbox("新闻发布平台", ["官方媒体", "财经媒体/商业媒体", "社交平台/自媒体"])
-    platform_code = {"官方媒体": 0, "财经媒体/商业媒体": 1, "社交平台/自媒体": 2}[platform]
+
+    # --- 核心改动在这里：使用列布局 ---
+    col1, col2 = st.columns([2, 3]) # 左边占2份宽度，右边占3份
+
+    with col1:
+        platform = st.selectbox(
+            "新闻发布平台", 
+            ["官方媒体", "财经媒体/商业媒体", "社交平台/自媒体"],
+            key='platform_select' # 给组件一个唯一的key
+        )
+        platform_code = {"官方媒体": 0, "财经媒体/商业媒体": 1, "社交平台/自媒体": 2}[platform]
+
+    with col2:
+        # 为了对齐，加一点空白
+        st.write("") 
+        st.write("")
+        # 使用 st.expander 创建一个可折叠的说明区域
+        with st.expander("查看不同平台类型的新闻示例"):
+            try:
+                # 从 example.txt 文件读取内容
+                with open("example.txt", "r", encoding="utf-8") as f:
+                    example_text = f.read()
+                st.markdown(example_text)
+            except FileNotFoundError:
+                st.error("示例文件 'example.txt' 未找到。")
+    
     date = st.date_input("发布日期(yyyy/mm/dd)")
     mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI"])
 
