@@ -14,41 +14,46 @@ if 'stock_code_input' not in st.session_state:
     st.session_state.stock_code_input = "" # 存储股票代码输入
 
 
-st.title("📈 财经新闻智能判别与投资建议系统")
+st.markdown("""
+<h2 style='text-align: center; color: #2E4053;'>
+    📈 财经新闻智能判别与投资建议系统
+</h2>
+""", unsafe_allow_html=True)
 
-# --- 输入部分保持不变 ---
 with st.container(border=True):
-    st.subheader("第一步：输入新闻信息")
+    # 使用 markdown 和 HTML h3 标签，并添加一个漂亮的下边框
+    st.markdown("""
+    <h3 style='border-bottom: 2px solid #D5DBDB; padding-bottom: 5px;'>
+        第一步：输入新闻信息
+    </h3>
+    """, unsafe_allow_html=True)
+
     title = st.text_input("新闻标题")
     content = st.text_area("新闻正文", height=200)
 
-    # --- 核心改动在这里：使用列布局 ---
-    col1, col2 = st.columns([2, 3]) # 左边占2份宽度，右边占3份
-
+    col1, col2 = st.columns([2, 3])
     with col1:
         platform = st.selectbox(
-            "新闻发布平台", 
+            "新闻发布平台",
             ["官方媒体", "财经媒体/商业媒体", "社交平台/自媒体"],
-            key='platform_select' # 给组件一个唯一的key
+            key='platform_select'
         )
         platform_code = {"官方媒体": 0, "财经媒体/商业媒体": 1, "社交平台/自媒体": 2}[platform]
-
     with col2:
-        # 为了对齐，加一点空白
-        st.write("") 
         st.write("")
-        # 使用 st.expander 创建一个可折叠的说明区域
-        with st.expander("查看不同平台的类型示例"):
+        st.write("")
+        with st.expander("查看不同平台类型的新闻示例"):
             try:
-                # 从 example.txt 文件读取内容
-                with open("来源分类 .txt", "r", encoding="utf-8") as f:
+                with open("example.txt", "r", encoding="utf-8") as f:
                     example_text = f.read()
                 st.markdown(example_text)
             except FileNotFoundError:
-                st.error("示例文件 '来源分类.txt' 未找到。")
+                st.error("示例文件 'example.txt' 未找到。")
     
-    date = st.date_input("发布日期")
-    mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI(Gemini 2.0-flash)"])
+    date = st.date_input("发布日期(yyyy/mm/dd)")
+    mode = st.radio("请选择判别方式", ["使用我们的模型！", "使用AI(Gemini 2.0-flash)"], horizontal=True) 
+# --- 输入部分保持不变 ---
+
 
 # --- 第2步：处理“开始判别”按钮的点击事件 ---
 if st.button("开始判别", type="primary"):
@@ -74,7 +79,13 @@ if st.button("开始判别", type="primary"):
 # --- 第3步：根据 Session State 的状态来决定是否显示结果区域 ---
 if st.session_state.show_results:
     st.divider()
-    st.subheader("第二步：查看判别结果与获取投资建议")
+    
+    # 同样使用自定义的 markdown 标题
+    st.markdown("""
+    <h3 style='border-bottom: 2px solid #D5DBDB; padding-bottom: 5px;'>
+        第二步：查看判别结果与获取投资建议
+    </h3>
+    """, unsafe_allow_html=True)
     
     data = st.session_state.result_data
 
