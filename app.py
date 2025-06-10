@@ -38,7 +38,7 @@ with st.container(border=True):
         st.write("") 
         st.write("")
         # 使用 st.expander 创建一个可折叠的说明区域
-        with st.expander("查看不同平台类型的新闻示例"):
+        with st.expander("查看不同平台的类型示例"):
             try:
                 # 从 example.txt 文件读取内容
                 with open("来源分类 .txt", "r", encoding="utf-8") as f:
