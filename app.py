@@ -85,7 +85,7 @@ if st.button("开始判别", type="primary"):
                     "mode": "model", "result": result, "prob": prob, "sentiment": sentiment
                 }
             else: # 使用AI
-                result = predict_by_ai(title, content, platform_code)
+                result = predict_by_ai(title, content, platform_code, str(date)) 
                 st.session_state.result_data = {
                     "mode": "ai", "result": result
                 }
