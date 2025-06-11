@@ -17,7 +17,8 @@ def gemini_prompt(message: str):
         return "❌ Gemini响应异常"
 
 def predict_by_ai(title, content, platform_code):
-    prompt = f"""请判断以下财经新闻是否真实，并简要说明理由：
+    today_str = date.today().strftime('%Y-%m-%d')
+    prompt = f"""请判断以下财经新闻是否真实，并简要说明理由，今天是{today_str}：
 标题：{title}
 内容：{content}
 平台类型（0=官方，1=财经媒体/商业媒体，2=社交平台/自媒体）：{platform_code}
