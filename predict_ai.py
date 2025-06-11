@@ -16,14 +16,26 @@ def gemini_prompt(message: str):
     except:
         return "❌ Gemini响应异常"
 
-def predict_by_ai(title, content, platform_code):
+def predict_by_ai(title, content, platform_code, news_date_str):
     today_str = date.today().strftime('%Y-%m-%d')
-    prompt = f"""请判断以下财经新闻是否真实，并简要说明理由，今天是{today_str}：
-标题：{title}
-内容：{content}
-平台类型（0=官方，1=财经媒体/商业媒体，2=社交平台/自媒体）：{platform_code}
-请仅返回“真实”或“虚假”+简短理由。"""
-    return gemini_prompt(prompt)
+    prompt_refined = f"""
+    你是一名专业的财经新闻审查员，任务：判断以下财经新闻的真实性，并提供简要理由。
+
+    日期信息：
+    今天是：{today_str}
+    新闻发布日期是：{news_date_str}
+
+    新闻内容：
+    标题：{title}
+    正文：{content}
+    发布平台类型（0=官方，1=财经媒体/商业媒体，2=社交平台/自媒体）：{platform_code}
+
+    请仅返回一个包含判断结果（“真实”或“虚假”）和理由的字符串，格式严格为：“[结果]，理由：[理由]”。
+    例如：“真实，理由：内容符合已知事实。” 或 “虚假，理由：缺乏事实依据。”
+
+    """
+    # 使用 refined prompt
+    return gemini_prompt(prompt_refined)
 
 def check_timeliness(news_date, stock_code):
     """
