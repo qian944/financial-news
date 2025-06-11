@@ -30,7 +30,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<p style='text-align: center; font-family: "Georgia", serif; font-style: italic; font-size: 18px;'>
+<p style='text-align: center; font-family: "Georgia", serif; font-style: italic; font-size: 24px;'>
     这个消息可信吗？
 </p>
 """, unsafe_allow_html=True)
