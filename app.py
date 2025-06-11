@@ -26,8 +26,13 @@ if 'sim_days' not in st.session_state:
 st.markdown("""
 <h2 style='text-align: center;'>
     📈 财经新闻智能判别与投资建议系统
-    -----这个消息可信吗？
 </h2>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<p style='text-align: center; font-family: "Georgia", serif; font-style: italic; font-size: 18px;'>
+    这个消息可信吗？
+</p>
 """, unsafe_allow_html=True)
 
 with st.container(border=True):
